@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from data import scrape_platform
 
 class Data(BaseModel):
     url: str
@@ -14,4 +15,5 @@ async def root():
 @app.post('/scrape')
 async def scrape(data: Data):
     data = dict(data)
-    return data['url']
+    comments = scrape_platform(data['url'])
+    return comments
