@@ -1,4 +1,5 @@
 import streamlit as st
+import requests
 
 st.title("Welcome to Multiplatform-Post-Analyzer")
 
@@ -11,3 +12,11 @@ dropdown = st.selectbox(
 )
 
 st.button("Analyze")
+
+elements = {
+    'url': url,
+    'platform': dropdown
+}
+
+response = requests.post('http://127.0.0.1:8000/scrape', json=elements)
+print(response.con)
