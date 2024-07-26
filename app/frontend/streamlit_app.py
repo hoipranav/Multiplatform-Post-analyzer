@@ -11,12 +11,10 @@ dropdown = st.selectbox(
     placeholder="Select the platform..."
 )
 
-st.button("Analyze")
-
-elements = {
-    'url': url,
-    'platform': dropdown
-}
-
-response = requests.post('http://127.0.0.1:8000/scrape', json=elements)
-print(response.con)
+if st.button("Analyze"):
+    elements = {
+        'url': url,
+        'platform': dropdown
+    }
+    response = requests.post('http://127.0.0.1:8000/scrape', json=elements).json()
+    print(response)
