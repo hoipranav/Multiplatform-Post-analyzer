@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from data import scrape_platform
+from yt_api import get_top_level_comments
 
 class Data(BaseModel):
     url: str
@@ -15,5 +15,6 @@ async def root():
 @app.post('/scrape')
 async def scrape(data: Data):
     data = dict(data)
-    comments = scrape_platform(data['url'])
+    videoid = data['url'].split('=')[1]
+    comments = get_top_level_comments(videoid=videoid)
     return comments
