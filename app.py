@@ -8,7 +8,7 @@ url = st.text_input("Paste the link below.")
 
 dropdown = st.selectbox(
     "Which paltform content would you like to analyze?",
-    ("Youtube", "X", "LinkedIn"),
+    ("Youtube", "Reddit"),
     placeholder="Select the platform..."
 )
 
@@ -27,10 +27,10 @@ if st.button("Analyze"):
         with open('clean_comments.txt', 'w') as file:
             for i in comments:
                 file.write(f"{i}\n")
-    if dropdown == "X":
-        response = requests.post('http://127.0.0.1:8000/scrape/x', json=elements).json()
-        print(response)
-    if dropdown == "LinkedIn":
-        response = requests.post('http://127.0.0.1:8000/scrape/linkedIn', json=elements).json()
-        for i in response:
-            print(i)
+    # if dropdown == "X":
+    #     response = requests.post('http://127.0.0.1:8000/scrape/x', json=elements).json()
+    #     print(response)
+    # if dropdown == "LinkedIn":
+    #     response = requests.post('http://127.0.0.1:8000/scrape/linkedIn', json=elements).json()
+    #     for i in response:
+    #         print(i)
