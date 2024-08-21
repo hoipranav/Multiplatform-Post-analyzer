@@ -1,6 +1,9 @@
 import re
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 import html
+
+lemmatizer = WordNetLemmatizer()
 
 def make_lowercase(file):
     for i in range(len(file)):
@@ -42,6 +45,14 @@ def remove_url(file):
         file[i] = url_pattern.sub(r'', text)
     return file
 
+def lemmatize_text(file):
+    for i in range(len(file)):
+        text = file[i].split()
+        lemmatized_words = [lemmatizer.lemmatize(word, pos='v') for word in text]
+        lemmatized_sentence = ' '.join(lemmatized_words)
+        file[i] = lemmatized_sentence
+    return file
+
 def clean_comments():
     with open('comments.txt', 'r') as file:
         comments = file.readlines()
@@ -51,4 +62,5 @@ def clean_comments():
         comments = remove_punctuation(comments)
         comments = remove_url(comments)
         comments = remove_stopwords(comments)
+        comments = lemmatize_text(comments)
     return comments

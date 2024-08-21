@@ -37,7 +37,7 @@ def get_yt_comments(videoid: str, pageToken: str):
             comments_list.append(
                 response["items"][i]["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
             )
-        except IndexError:
+        except:
             iter = 0
             return comments_list, "KeyError"
 
