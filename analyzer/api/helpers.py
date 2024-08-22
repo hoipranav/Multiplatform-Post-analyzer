@@ -44,7 +44,7 @@ def get_yt_comments(videoid: str, pageToken: str):
 
     return comments_list, response["nextPageToken"]
 
-def get_reddit_post_comments():
+def get_reddit_post_comments(url: str):
     """Uses PRAW to get reddit's posts comments thorugh reddit API"""
     credentials = {"client_id":os.environ["reddit_client"],
                "client_secret":os.environ["reddit_client_secret"],
