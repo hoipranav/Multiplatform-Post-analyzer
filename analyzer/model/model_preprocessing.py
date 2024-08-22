@@ -54,8 +54,8 @@ def lemmatize_text(file):
         file[i] = lemmatized_sentence
     return file
 
-def clean_comments():
-    with open('comments.txt', 'r') as file:
+def clean_comments(platform: str):
+    with open(f'{platform}_comments.txt', 'r') as file:
         comments = file.readlines()
         comments = remove_html(comments)
         comments = unescape_html(comments)
