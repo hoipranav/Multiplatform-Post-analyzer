@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from analyzer.api.helpers import get_yt_comments
+from analyzer.api.helpers import get_yt_comments, get_reddit_post_comments
 
 
 class Youtube_params(BaseModel):
