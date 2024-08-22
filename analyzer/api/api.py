@@ -36,4 +36,5 @@ async def scrape_yt(data: Youtube_params):
 @app.post('/scrape/reddit')
 async def scrape_reddit(data: Reddit_params):
     data = dict(data)
-    get_reddit_post_comments(data['url'])
+    comments = get_reddit_post_comments(data['url'])
+    return comments
