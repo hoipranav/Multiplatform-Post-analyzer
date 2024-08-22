@@ -57,6 +57,7 @@ def get_reddit_post_comments(url: str):
                         user_agent=credentials["User_agent"])
     submission = reddit.submission(url=url)
     submission.comments.replace_more(limit=None)
-    with open("reddit_comments.txt", "w") as fl:
-        for comment in submission.comments.list():
-            fl.write(f"{comment.body}\n")
+    for comment in submission.comments.list():
+        comments_list.append(comment.body)
+
+    return comments_list
