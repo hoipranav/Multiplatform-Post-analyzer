@@ -2,6 +2,7 @@ import googleapiclient.discovery
 import os
 import praw
 
+
 comments_list = []
 iter = 0
 
@@ -54,7 +55,6 @@ def get_reddit_post_comments(url:str):
                         client_secret=credentials["client_secret"],
                         refresh_token=credentials["refresh_token"],
                         user_agent=credentials["User_agent"])
-    url = "https://www.reddit.com/r/Damnthatsinteresting/comments/1exhv6m/maps_of_usa_and_australia_almost_fits_into_each/"
     submission = reddit.submission(url=url)
     submission.comments.replace_more(limit=None)
     with open("reddit_comments.txt", "w") as fl:

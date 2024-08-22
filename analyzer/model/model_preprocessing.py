@@ -3,6 +3,7 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import html
 
+
 lemmatizer = WordNetLemmatizer()
 
 def make_lowercase(file):

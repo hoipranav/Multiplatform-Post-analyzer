@@ -1,19 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from analyzer.api.helpers import get_yt_comments
-
+from analyzer.api.helpers import get_yt_comments, get_reddit_post_comments
 
 class Youtube_params(BaseModel):
     url: str
     platform: str
 
-class X_params(BaseModel):
-    content: str
-    platform: str
-
-class LinkedIn_params(BaseModel):
+class Reddit_params(BaseModel):
     url: str
     platform: str
+
 
 app = FastAPI()
 
@@ -35,3 +31,8 @@ async def scrape_yt(data: Youtube_params):
             break
 
     return comments
+
+@app.post('/scrape/reddit')
+async def scrape_reddit(data: Reddit_params):
+    data = dict(data)
+    get_reddit_post_comments(data['url'])
