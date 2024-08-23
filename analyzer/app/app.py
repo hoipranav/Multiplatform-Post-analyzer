@@ -13,27 +13,22 @@ dropdown = st.selectbox(
     placeholder="Select the platform..."
 )
 
+
+def get_comments(platform:str):
+    """Calls the post method according to the respective platform given as input"""
+    response = requests.post("http://127.0.0.1:8000/scrape/{0}".format(platform), json=elements).json()
+    with open(f"{platform}_comments.txt", 'w') as comments_file:
+        for i in response:
+            comments_file.write(f"{i}\n")
+    comments = clean_comments(platform)
+    with open(f"clean_{platform}_comments.txt", 'w') as file:
+        for i in comments:
+            file.write(f"{i}\n")
+
+
 if st.button("Analyze"):
     elements = {
         'url': url,
         'platform': dropdown
     }
-
-    if dropdown == "Youtube":
-        response = requests.post('http://127.0.0.1:8000/scrape/youtube', json=elements).json()
-        with open('youtube_comments.txt', 'w') as comments_file:
-            for i in response:
-                comments_file.write(f"{i}\n")
-        comments = clean_comments("youtube")
-        with open('clean_youtube_comments.txt', 'w') as file:
-            for i in comments:
-                file.write(f"{i}\n")
-    if dropdown == "Reddit":
-        response = requests.post('http://127.0.0.1:8000/scrape/reddit', json=elements).json()
-        with open("reddit_comments.txt", 'w') as file:
-            for i in response:
-                file.write(f"{i}\n")
-        comments = clean_comments("reddit")
-        with open('clean_reddit_comments.txt', 'w') as file:
-            for i in comments:
-                file.write(f"{i}\n")
+    get_comments(elements['platform'].lower())
