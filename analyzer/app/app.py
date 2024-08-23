@@ -1,9 +1,9 @@
 import streamlit as st
 import requests
-from analyzer.model.model_preprocessing import clean_comments
+from analyzer.model.model_preprocessing import preprocessing
 
 
-st.title("Welcome to Multiplatform-Post-Analyzer")
+st.title("Welcome to Platform-Analyzer")
 
 url = st.text_input("Paste the link below.")
 
@@ -20,7 +20,7 @@ def get_comments(platform:str):
     with open(f"{platform}_comments.txt", 'w') as comments_file:
         for i in response:
             comments_file.write(f"{i}\n")
-    comments = clean_comments(platform)
+    comments = preprocessing(platform)
     with open(f"clean_{platform}_comments.txt", 'w') as file:
         for i in comments:
             file.write(f"{i}\n")
