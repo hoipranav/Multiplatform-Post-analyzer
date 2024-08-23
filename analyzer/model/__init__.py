@@ -1,4 +1,4 @@
-from model_preprocessing import preprocessing
+from .model_preprocessing import preprocessing
 
 __all__ = [
     'preprocessing'
