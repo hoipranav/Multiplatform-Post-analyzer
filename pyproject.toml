@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "platform-analyzer"
+version = "1.0.0"
+dependencies = [
+    "fastapi[standard]",
+    "streamlit",
+    "nltk",
+    "praw",
+    "google-api-python-client"
+]
+requires-python = ">=3.9"
