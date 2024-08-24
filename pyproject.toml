@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "platform-analyzer"
 version = "1.0.0"
 dependencies = [
-    "fastapi[standard]",
-    "streamlit",
+    "fastapi[standard] >= 0.112.1",
+    "streamlit >= 1.37.1",
     "nltk",
     "praw",
     "google-api-python-client"
