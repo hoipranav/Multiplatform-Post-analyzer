@@ -17,7 +17,7 @@ app = FastAPI()
 
 @app.get('/')
 async def root():
-    return {'message': "Welcome to the Multiplatform-post-analyzer API"}
+    return {'message': "Welcome to the Platform-analyzer API"}
 
 
 @app.post('/scrape/youtube')
