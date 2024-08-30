@@ -1,0 +1,10 @@
+services:
+  app:
+    image: hoipranav/app
+    ports:
+      - 8501:8501
+
+  web:
+    image: hoipranav/api
+    ports:
+      - 81:81
