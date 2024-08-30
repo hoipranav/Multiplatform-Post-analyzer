@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from .helpers import get_yt_comments, get_reddit_post_comments
+from .model_preprocessing import preprocessing
 
 
 class Youtube_params(BaseModel):
@@ -30,11 +31,12 @@ async def scrape_yt(data: Youtube_params):
         token = pageToken
         if pageToken == "KeyError":
             break
-
+    comments = preprocessing(comments, data['platform'])
     return comments
 
 @app.post('/scrape/reddit')
 async def scrape_reddit(data: Reddit_params):
     data = dict(data)
     comments = get_reddit_post_comments(data['url'])
+    comments = preprocessing(comments, data['platform'])
     return comments
