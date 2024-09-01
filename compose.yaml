@@ -1,12 +1,14 @@
 services:
   app:
-    image: hoipranav/app
-    network_mode: "host"
+    container_name: appcontainer
+    image: hoipranav/app:1.2
+    network_mode: "appnetwork"
     ports:
       - 8501:8501
 
   web:
-    image: hoipranav/api
-    network_mode: "host"
+    container_name: apicontainer
+    image: hoipranav/api:1.2
+    network_mode: "appnetwork"
     ports:
       - 8081:8081
