@@ -1,10 +1,12 @@
 services:
   app:
     image: hoipranav/app
+    network_mode: "host"
     ports:
       - 8501:8501
 
   web:
     image: hoipranav/api
+    network_mode: "host"
     ports:
-      - 81:81
+      - 8081:8081
