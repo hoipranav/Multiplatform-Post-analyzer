@@ -152,8 +152,8 @@ def detect_lang(file):
         pd.DataFrame: The DataFrame with all comments in English
     """
     index_list = []
-    model = joblib.load('./model/language_detector.pkl')
-    cv = joblib.load('./model/cv.pkl')
+    model = joblib.load('./analyzer/model/language_detector.pkl')
+    cv = joblib.load('./analyzer/model/cv.pkl')
     for i in range(file.shape[0]):
         text = file.iloc[i].values
         text_cv = cv.transform(text)
@@ -194,4 +194,5 @@ def preprocessing(comments: list, platform: str):
     comments = remove_stopwords(comments)
     comments = lemmatize_text(comments)
     comments = detect_lang(comments)
+    comments.dropna().reset_index(drop=True)
     return comments
