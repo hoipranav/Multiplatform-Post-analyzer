@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from .helpers import get_yt_comments, get_reddit_post_comments
 from .model_preprocessing import preprocessing
-from model.w2v import w2v_model
+from model.w2v import w2v_model, kmeans_clusters
 
 
 class Youtube_params(BaseModel):
@@ -46,6 +46,7 @@ async def scrape_yt(data: Youtube_params):
             break
     comments = preprocessing(comments, data['platform'])
     w2v_model(comments)
+    kmeans_clusters(comments)
     return comments
 
 
