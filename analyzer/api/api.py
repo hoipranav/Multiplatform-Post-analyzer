@@ -3,8 +3,9 @@ from pydantic import BaseModel
 from .helpers import get_yt_comments, get_reddit_post_comments
 from .model_preprocessing import preprocessing
 from model.w2v import w2v_model, kmeans_clusters
-
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pandas as pd
+from .tfdif_replace import create_tfidf_dictionary, replace_tfidf_words
 class Youtube_params(BaseModel):
     url: str
     platform: str
@@ -45,9 +46,19 @@ async def scrape_yt(data: Youtube_params):
         if pageToken == "KeyError":
             break
     comments = preprocessing(comments, data['platform'])
+    dup_comments = pd.DataFrame(comments)
+    print(dup_comments)
     w2v_model(comments)
-    kmeans_clusters(comments)
-    return comments
+    scores = kmeans_clusters(comments)
+    tfidf = TfidfVectorizer(tokenizer=lambda y: y.split(), norm=None)
+    tfidf.fit(dup_comments.comment)
+    features = pd.DataFrame(tfidf.get_feature_names_out())
+    print(f"features : {features}")
+    transformed = tfidf.transform(dup_comments)
+    print(f"transformed shape ; {type(transformed.shape)}")
+    replaced_tf_scores = dup_comments.apply(lambda x: replace_tfidf_words(x, transformed, features), axis=1)
+    print(f"scores : {scores} \n replaced_tfidf_scores : {replaced_tf_scores}")
+    return ["hi"]
 
 
 @app.post('/scrape/reddit')
