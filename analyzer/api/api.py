@@ -55,18 +55,14 @@ async def scrape_yt(data: Youtube_params):
     tfidf.fit(comments.comment)
     features = tfidf.get_feature_names_out()
     features_transformed = features[:, np.newaxis]
-    print(f"features : {features_transformed.shape}")
     transformed = tfidf.transform(comments.comment)
-    print(f"transformed shape ; {transformed.shape}")
     replaced_tf_scores = dup_comments.apply(lambda x: replace_tfidf_words(x, transformed, features_transformed), axis=1)
     print(replaced_tf_scores.shape)
     replaced_closeness_scores = comments.comment.apply(lambda x: list(map(lambda y: replace_sentiment_words(y, scores), x.split())))
-    print(f"closeness score:{replaced_closeness_scores.shape}")
     replacement_df = pd.DataFrame(data=[replaced_closeness_scores, replaced_tf_scores, comments.comment]).T
     replacement_df.columns = ['sentiment_coeff', 'tfidf_score', 'sentence']
     replacement_df['sentiment_rate'] = replacement_df.apply(lambda x:np.array(x.loc['sentiment_coeff']) @ np.array(x.loc['tfidf_score']), axis=1)
     replacement_df['prediction'] = (replacement_df.sentiment_rate>0).astype('int8')
-    print(f"replacement_df: {replacement_df}")
     return ["hi"]
 
 
