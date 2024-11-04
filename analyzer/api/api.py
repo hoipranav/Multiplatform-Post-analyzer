@@ -5,7 +5,8 @@ from .model_preprocessing import preprocessing
 from model.w2v import w2v_model, kmeans_clusters
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
-from .tfdif_replace import create_tfidf_dictionary, replace_tfidf_words
+import numpy as np
+from .tfdif_replace import replace_tfidf_words, replace_sentiment_words
 class Youtube_params(BaseModel):
     url: str
     platform: str
@@ -46,18 +47,26 @@ async def scrape_yt(data: Youtube_params):
         if pageToken == "KeyError":
             break
     comments = preprocessing(comments, data['platform'])
-    dup_comments = pd.DataFrame(comments)
-    print(dup_comments)
+    dup_comments = comments
+    print(f"comments shape : {dup_comments.shape}")
     w2v_model(comments)
     scores = kmeans_clusters(comments)
     tfidf = TfidfVectorizer(tokenizer=lambda y: y.split(), norm=None)
-    tfidf.fit(dup_comments.comment)
-    features = pd.DataFrame(tfidf.get_feature_names_out())
-    print(f"features : {features}")
-    transformed = tfidf.transform(dup_comments)
-    print(f"transformed shape ; {type(transformed.shape)}")
-    replaced_tf_scores = dup_comments.apply(lambda x: replace_tfidf_words(x, transformed, features), axis=1)
-    print(f"scores : {scores} \n replaced_tfidf_scores : {replaced_tf_scores}")
+    tfidf.fit(comments.comment)
+    features = tfidf.get_feature_names_out()
+    features_transformed = features[:, np.newaxis]
+    print(f"features : {features_transformed.shape}")
+    transformed = tfidf.transform(comments.comment)
+    print(f"transformed shape ; {transformed.shape}")
+    replaced_tf_scores = dup_comments.apply(lambda x: replace_tfidf_words(x, transformed, features_transformed), axis=1)
+    print(replaced_tf_scores.shape)
+    replaced_closeness_scores = comments.comment.apply(lambda x: list(map(lambda y: replace_sentiment_words(y, scores), x.split())))
+    print(f"closeness score:{replaced_closeness_scores.shape}")
+    replacement_df = pd.DataFrame(data=[replaced_closeness_scores, replaced_tf_scores, comments.comment]).T
+    replacement_df.columns = ['sentiment_coeff', 'tfidf_score', 'sentence']
+    replacement_df['sentiment_rate'] = replacement_df.apply(lambda x:np.array(x.loc['sentiment_coeff']) @ np.array(x.loc['tfidf_score']), axis=1)
+    replacement_df['prediction'] = (replacement_df.sentiment_rate>0).astype('int8')
+    print(f"replacement_df: {replacement_df}")
     return ["hi"]
 
 

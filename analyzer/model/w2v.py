@@ -60,7 +60,6 @@ def kmeans_clusters(pd: pd.DataFrame) -> dict:
         n_clusters=2, max_iter=1000, random_state=True, n_init=100
     ).fit(X=word_vectors.vectors.astype('double'))
     words = DataFrame(word_vectors.index_to_key, columns=["words"])
-    words.columns = ['words']
     words['vectors'] = words.words.apply(lambda x: word_vectors[f'{x}'])
     words['cluster'] = words.vectors.apply(lambda x: kmeans_model.predict([np.array(x)]))
     words.cluster = words.cluster.apply(lambda x: x[0])
