@@ -63,6 +63,8 @@ async def scrape_yt(data: Youtube_params):
     replacement_df.columns = ['sentiment_coeff', 'tfidf_score', 'sentence']
     replacement_df['sentiment_rate'] = replacement_df.apply(lambda x:np.array(x.loc['sentiment_coeff']) @ np.array(x.loc['tfidf_score']), axis=1)
     replacement_df['prediction'] = (replacement_df.sentiment_rate>0).astype('int8')
+    # print(replacement_df[replacement_df['prediction'] == 1].value_counts())
+    print(replacement_df['prediction'].value_counts())
     return ["hi"]
 
 
