@@ -3,10 +3,11 @@ from pydantic import BaseModel
 from .helpers import get_yt_comments, get_reddit_post_comments
 from .model_preprocessing import preprocessing
 from model.w2v import w2v_model, kmeans_clusters
-from sklearn.feature_extraction.text import TfidfVectorizer
-import pandas as pd
+from sklearn.cluster import KMeans
+from .bigram_trigram import get_ngrams, generate_bigrams, count_vectorizer_bigram
 import numpy as np
-from .tfdif_replace import replace_tfidf_words, replace_sentiment_words
+import pandas as pd
+
 class Youtube_params(BaseModel):
     url: str
     platform: str
@@ -46,23 +47,25 @@ async def scrape_yt(data: Youtube_params):
         token = pageToken
         if pageToken == "KeyError":
             break
-    comments = preprocessing(comments, data['platform'])
     dup_comments = comments
+    comments = preprocessing(comments, data['platform'])
+    print(f"comments shape : {len(dup_comments)}")
+    # comments_bigram = generate_bigrams(dup_comments)
+    comments_bigram = count_vectorizer_bigram(comments)
+    print(f"bigrammed_commenta : {comments_bigram}")
+    print(f"bigrammed shape : {comments_bigram.shape}")
+    clusterer = KMeans(n_clusters=2, random_state=42, max_iter=1000)
+    clusterer.fit(comments_bigram)
+    pred = pd.DataFrame(clusterer.labels_).to_numpy()
+    dup_comments = pd.DataFrame(dup_comments, columns=["comment"])
+    dup_comments.drop(index=dup_comments.shape[0]-1, inplace=True)
     print(f"comments shape : {dup_comments.shape}")
-    w2v_model(comments)
-    scores = kmeans_clusters(comments)
-    tfidf = TfidfVectorizer(tokenizer=lambda y: y.split(), norm=None)
-    tfidf.fit(comments.comment)
-    features = tfidf.get_feature_names_out()
-    features_transformed = features[:, np.newaxis]
-    transformed = tfidf.transform(comments.comment)
-    replaced_tf_scores = dup_comments.apply(lambda x: replace_tfidf_words(x, transformed, features_transformed), axis=1)
-    print(replaced_tf_scores.shape)
-    replaced_closeness_scores = comments.comment.apply(lambda x: list(map(lambda y: replace_sentiment_words(y, scores), x.split())))
-    replacement_df = pd.DataFrame(data=[replaced_closeness_scores, replaced_tf_scores, comments.comment]).T
-    replacement_df.columns = ['sentiment_coeff', 'tfidf_score', 'sentence']
-    replacement_df['sentiment_rate'] = replacement_df.apply(lambda x:np.array(x.loc['sentiment_coeff']) @ np.array(x.loc['tfidf_score']), axis=1)
-    replacement_df['prediction'] = (replacement_df.sentiment_rate>0).astype('int8')
+    dup_comments = dup_comments["comment"].to_list()
+    positive_comments = []
+    for i in range(pred.shape[0]):
+        if pred[i] == 1:
+          positive_comments.append(dup_comments[i])
+    print(len(positive_comments))  
     return ["hi"]
 
 

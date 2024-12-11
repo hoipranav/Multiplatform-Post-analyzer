@@ -1,7 +1,7 @@
 import googleapiclient.discovery
 import os
 import praw
-
+import time
 
 comments_list = []
 iter = 0
@@ -37,6 +37,7 @@ def get_yt_comments(videoid: str, page_token: str) -> tuple[list[str], str]:
         )
         iter += 1
     else:
+        time.sleep(1)
         request = youtube.commentThreads().list(
             part="snippet",
             videoId=videoid,
